@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<group>
+<channel name="Linac100:PS1:QM10:AI">QM10:AI</channel>
+<channel name="Linac100:PS1:QM10:AO">QM10:AO</channel>
+<channel name="Linac100:PS1:QM3:BI">QM3:BI</channel>
+<unit >Current(A)</unit>
+<ChartTitle>Linac-PS</ChartTitle>
+</group>

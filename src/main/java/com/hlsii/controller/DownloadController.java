@@ -1,0 +1,597 @@
+package com.hlsii.controller;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.hazelcast.util.StringUtil;
+import com.hlsii.commdef.DownloadState;
+import com.hlsii.commdef.DownloadTask;
+import com.hlsii.commdef.MultiplePVDataString;
+import com.hlsii.commdef.RetrieveParms;
+import com.hlsii.service.BufferedRetrieveService;
+import com.hlsii.service.IDownloadService;
+import com.hlsii.service.IRetrieveService;
+import com.hlsii.util.ConfigUtil;
+import com.hlsii.util.ExportUtil;
+import com.hlsii.util.SiteConfigUtil;
+import com.hlsii.vo.RetrieveData;
+import com.hlsii.vo.ReturnWrap;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.undertow.ConfigurableUndertowWebServerFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import sun.security.krb5.Config;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * @author ScXin
+ * @date 4/26/2020 6:27 PM
+ */
+
+@RequestMapping("/hdars/download")
+@RestController
+public class DownloadController {
+
+    private static Logger logger = Logger.getLogger(DownloadController.class);
+
+
+    @Autowired
+    private IDownloadService downloadService;
+
+    @Autowired
+    private IRetrieveService retrieveService;
+
+
+    private RetrieveParms retrieveParms;
+    private long totalSize = 0;
+    private ArrayList<String> pvNameList = new ArrayList<>();
+
+    private Timestamp timestampPosition;
+
+//    @RequestMapping("/startDownload")
+//    public void startDownload(HttpServletRequest request, HttpServletResponse response, String taskid) {
+//        logger.info("Start download task: " + taskid);
+//        DownloadTask task = downloadService.getTask(taskid);
+//
+//        if (task == null || task.getState() != DownloadState.Created) {
+//            logger.info("Download task " + taskid + " not existed.");
+//            return;
+//        }
+//        String pvs = "";
+//        for (String pv : task.getParms().getPvs()) {
+//            if (!StringUtils.isEmpty(pvs)) {
+//                pvs += ", ";
+//            }
+//            pvs += pv;
+//        }
+////        recordUserLogService.logOperation(OperationType.DOWNLOAD_RAW_DATA, pvs);
+//        task.setState(DownloadState.Downloading);
+//        //String filename = "download.csv";
+//        String filename = "download.txt";
+//        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+//        //response.setContentType("text/csv");
+//        response.setContentType("txt");
+//
+//        try {
+//            ServletOutputStream out = response.getOutputStream();
+//            BufferedRetrieveService in = new BufferedRetrieveService(retrieveService, task.getParms());
+//            /*
+//            long length = in.getTransferSize();
+//            if (length <= Integer.MAX_VALUE) {
+//                response.setContentLength((int)length);
+//            } else {
+//                response.addHeader("Content-Length", Long.toString(length));
+//            }
+//            */
+//            String dataStr;
+//            int totalRetrievalCount = (int) Math.ceil((task.getParms().getTo().getTime() - task.getParms().getFrom().getTime()) /
+//                    (SiteConfigUtil.getTimeSlotForDownload() * 1000.0d));
+//            logger.debug("totalRetrievalCount = " + totalRetrievalCount);
+//            int finishedCount = 0;
+//            while ((dataStr = in.read()) != null) {
+//                byte[] b = dataStr.getBytes(StandardCharsets.UTF_8);
+//                out.write(b, 0, b.length);
+//                out.write(0x0A);
+//                finishedCount++;
+//                int progress = (finishedCount * 100 / totalRetrievalCount);
+//                logger.debug("finishedCount = " + finishedCount + ", progress = " + progress + "%");
+//                if (!task.updateProgress(progress)) {
+//                    // Already canceled by remote
+//                    // break;
+//                }
+//            }
+//            out.flush();
+//            out.close();
+//            if (task.getState() == DownloadState.Downloading) {
+//                task.setState(DownloadState.Finished);
+//            }
+//        } catch (Exception ex) {
+//            logger.error(ex);
+//            task.setState(DownloadState.Terminated);
+//        }
+//    }
+
+
+    @ApiOperation("开始下载数据，返回保存数据的文件名")
+    @GetMapping("/startDownload2/{taskid}")
+    public String startDownload2(@PathVariable("taskid") String taskid) throws IOException {
+        logger.info("start download task:" + taskid);
+        DownloadTask task = downloadService.getTask(taskid);
+        if (task == null || task.getState() != DownloadState.Created) {
+            logger.info("Download task " + taskid + " not existed!");
+            return null;
+        }
+        String pvs = "";
+        for (String pv : task.getParms().getPvs()) {
+            if (!StringUtils.isEmpty(pvs)) {
+                pvs += ",";
+            }
+            pvs += pv;
+        }
+        task.setState(DownloadState.Downloading);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+        Date date = new Date();
+        String filename = simpleDateFormat.format(date) + ".txt";
+        String fileAddr = ConfigUtil.getConfigFilesDir() + "/records/" + filename;
+        File file = new File(fileAddr);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        retrieveParms = task.getParms();
+        if (retrieveService == null || retrieveParms == null) {
+            logger.error(MessageFormat.format("The retrieveService==null?{0} or RetrieveParms==null?{1} passed in is null!",
+                    retrieveService == null, retrieveParms == null));
+            return null;
+        }
+        if (retrieveParms.getFrom() == null || retrieveParms.getTo() == null) {
+            logger.error(MessageFormat.format("The retrieveParms.getFrom()==null?{0} or " +
+                            "retrieveParms.getTo()==null?{1} passed in is null!",
+                    retrieveParms.getFrom() == null, retrieveParms.getTo() == null));
+            return null;
+        }
+        StringBuilder headStr = new StringBuilder().append("Timestamp");
+        if (retrieveParms.getPvs() != null) {
+            for (String pv : retrieveParms.getPvs()) {
+                headStr.append(",").append(pv);
+                pvNameList.add(pv);
+            }
+        }
+        ExportUtil.exportHeader(file, headStr.toString());
+        timestampPosition = retrieveParms.getFrom();
+        calculateTotalSize(headStr.toString());
+//            float totalSeconds = (retrieveParms.getTo().getTime() - retrieveParms.getFrom().getTime()) / 1000;
+//            float maxEventNumber = 0;
+//            float eventValueSizeOfOneRaw = "2075/07/05 19:19:19.196".length();
+        List<RetrieveData> retrieveDataList = null;
+        RetrieveParms retrieveParmsForThisTime = retrieveParms.clone();
+        int totalRetrievalCount = (int) Math.ceil((task.getParms().getTo().getTime() - task.getParms().getFrom().getTime()) /
+                (SiteConfigUtil.getTimeSlotForDownload() * 1000.0d));
+        int finishedCount = 0;
+        while (timestampPosition.before(retrieveParms.getTo()) && task.getState() != DownloadState.Canceled) {
+            Timestamp start = timestampPosition;
+            // decide the end timestamp.
+            long ms = timestampPosition.getTime() + SiteConfigUtil.getTimeSlotForDownload() * 1000;
+            Timestamp end = new Timestamp(ms);
+            if (end.after(retrieveParms.getTo())) {
+                end = retrieveParms.getTo();
+            }
+            timestampPosition = end;
+            retrieveParmsForThisTime.setFrom(start);
+            retrieveParmsForThisTime.setTo(end);
+            retrieveDataList = retrieveService.retrievePVData(retrieveParmsForThisTime);
+            for (RetrieveData retrieveData : retrieveDataList) {
+                ExportUtil.exportPv(file, retrieveData, retrieveParms, pvNameList);
+            }
+            finishedCount++;
+            int progress = (finishedCount * 100 / totalRetrievalCount);
+            logger.debug("finishedCount = " + finishedCount + ", progress = " + progress + "%");
+            task.updateProgress(progress);
+        }
+        if (task.getState() == DownloadState.Downloading) {
+            task.setState(DownloadState.Finished);
+        }
+
+        return filename;
+    }
+
+    @ApiOperation("开始下载数据，返回保存数据的文件名")
+    @GetMapping("/startDownload/{taskid}")
+    public String startDown(@PathVariable("taskid") String taskid) {
+        logger.info("start download task:" + taskid);
+        DownloadTask task = downloadService.getTask(taskid);
+        if (task == null || task.getState() != DownloadState.Created) {
+            logger.info("Download task " + taskid + " not existed!");
+            return null;
+        }
+        String pvs = "";
+        for (String pv : task.getParms().getPvs()) {
+            if (!StringUtils.isEmpty(pvs)) {
+                pvs += ",";
+            }
+            pvs += pv;
+        }
+        task.setState(DownloadState.Downloading);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+        Date date = new Date();
+        String filename = simpleDateFormat.format(date) + ".txt";
+        String fileAddr = ConfigUtil.getConfigFilesDir() + "/records/" + filename;
+        File file = new File(fileAddr);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        FileOutputStream out = null;
+        OutputStream outputStream = null;
+//        InputStream inputStream = null;
+        try {
+            out = new FileOutputStream(file, true);
+            outputStream = new BufferedOutputStream(out, 1024 * 1024);
+            retrieveParms = task.getParms();
+            if (retrieveService == null || retrieveParms == null) {
+                logger.error(MessageFormat.format("The retrieveService==null?{0} or RetrieveParms==null?{1} passed in is null!",
+                        retrieveService == null, retrieveParms == null));
+                return null;
+            }
+
+            if (retrieveParms.getFrom() == null || retrieveParms.getTo() == null) {
+                logger.error(MessageFormat.format("The retrieveParms.getFrom()==null?{0} or " +
+                                "retrieveParms.getTo()==null?{1} passed in is null!",
+                        retrieveParms.getFrom() == null, retrieveParms.getTo() == null));
+                return null;
+            }
+            StringBuilder headStr = new StringBuilder().append("Timestamp");
+            if (retrieveParms.getPvs() != null) {
+                for (String pv : retrieveParms.getPvs()) {
+                    headStr.append(",").append(pv);
+                    pvNameList.add(pv);
+                }
+                outputStream.write(headStr.toString().getBytes());
+                outputStream.write(0x0A);
+//                queue.add(headStr.toString());
+            }
+
+            timestampPosition = retrieveParms.getFrom();
+            calculateTotalSize(headStr.toString());
+//            float totalSeconds = (retrieveParms.getTo().getTime() - retrieveParms.getFrom().getTime()) / 1000;
+//            float maxEventNumber = 0;
+//            float eventValueSizeOfOneRaw = "2075/07/05 19:19:19.196".length();
+            List<RetrieveData> retrieveDataList = null;
+            RetrieveParms retrieveParmsForThisTime = retrieveParms.clone();
+
+            while (timestampPosition.before(retrieveParms.getTo())) {
+                // all data are gotten, return.
+                Timestamp start = timestampPosition;
+
+                // decide the end timestamp.
+                long ms = timestampPosition.getTime() + SiteConfigUtil.getTimeSlotForDownload() * 1000;
+                Timestamp end = new Timestamp(ms);
+                if (end.after(retrieveParms.getTo())) {
+                    end = retrieveParms.getTo();
+                }
+                timestampPosition = end;
+                retrieveParmsForThisTime.setFrom(start);
+                retrieveParmsForThisTime.setTo(end);
+                retrieveDataList = retrieveService.retrievePVData(retrieveParmsForThisTime);
+                if (retrieveDataList != null && !retrieveDataList.isEmpty()) {
+                    for (RetrieveData retrieveData : retrieveDataList) {
+                        if (retrieveData.getData() != null && !retrieveData.getData().isEmpty()) {
+                            //
+                            TreeMap<Long, MultiplePVDataString> pvDataStringTreeMap = new TreeMap<>();
+                            String pvName = retrieveData.getPvName();
+
+                            JSONArray dataArray = retrieveData.getData();
+                            for (Object o : dataArray) {
+                                JSONObject jsonObject = (JSONObject) o;
+                                Long key = MultiplePVDataString.getKey(this.retrieveParms.getPvDataFormat(), jsonObject);
+                                if (key != null) {
+                                    MultiplePVDataString pvDataString = pvDataStringTreeMap.get(key);
+                                    if (pvDataString == null) {
+                                        pvDataString = new MultiplePVDataString(this.pvNameList, this.retrieveParms.getPvDataFormat());
+                                        pvDataStringTreeMap.put(key, pvDataString);
+                                    }
+                                    pvDataString.addPVData(pvName, jsonObject);
+                                }
+                            }
+                            if (!pvDataStringTreeMap.isEmpty()) {
+                                // add PV data string into the queue
+                                for (Object aSet : pvDataStringTreeMap.entrySet()) {
+                                    Map.Entry me = (Map.Entry) aSet;
+//                                    outputStream.write(me.getKey().toString().getBytes());
+////                                    outputStream.write(",".getBytes());
+                                    outputStream.write(me.getValue().toString().getBytes());
+                                    outputStream.write(0x0A);
+
+//                                    this.queue.add(me.getValue().toString());
+                                }
+                            }
+                            //
+                        }
+                    }
+                }
+            }
+
+            out.close();
+            outputStream.close();
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return filename;
+    }
+
+
+//    @ApiOperation("开始下载数据,返回保存数据的文件名")
+//    @GetMapping("/startDownload/{taskid}")
+//    public String startDownload(@PathVariable("taskid") String taskid) {
+//        logger.info("Start download task: " + taskid);
+//        DownloadTask task = downloadService.getTask(taskid);
+//
+////        System.out.println("DownloadTack=="+task.getId());
+//        if (task == null || task.getState() != DownloadState.Created) {
+//            logger.info("Download task " + taskid + " not existed.");
+//            return null;
+//        }
+//        String pvs = "";
+//        for (String pv : task.getParms().getPvs()) {
+//            if (!StringUtils.isEmpty(pvs)) {
+//                pvs += ", ";
+//            }
+//            pvs += pv;
+//        }
+////        recordUserLogService.logOperation(OperationType.DOWNLOAD_RAW_DATA, pvs);
+//        task.setState(DownloadState.Downloading);
+//
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+//        Date date = new Date();
+//        String filename = simpleDateFormat.format(date) + ".txt";
+//        String fileAddr = ConfigUtil.getConfigFilesDir() + "/records/" + filename;
+////        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+////
+////        response.setContentType("txt");
+//        File file = new File(fileAddr);
+////            ServletOutputStream out = response.getOutputStream();
+//        if (!file.exists()) {
+//            try {
+//                file.createNewFile();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        FileOutputStream out = null;
+//        OutputStream outputStream = null;
+//        InputStream inputStream = null;
+//        try {
+//
+//            out = new FileOutputStream(file, true);
+//            outputStream = new BufferedOutputStream(out, 1024 * 1024);
+////            byte[] buff = new byte[1024 * 1024];
+//            BufferedRetrieveService in = new BufferedRetrieveService(retrieveService, task.getParms());
+//            String dataStr;
+//            int totalRetrievalCount = (int) Math.ceil((task.getParms().getTo().getTime() - task.getParms().getFrom().getTime()) /
+//                    (SiteConfigUtil.getTimeSlotForDownload() * 1000.0d));
+//            logger.debug("totalRetrievalCount = " + totalRetrievalCount);
+//            int finishedCount = 0;
+//            byte[] buff = new byte[1024 * 8];
+//            while ((dataStr = in.read()) != null) {
+//                byte[] b = dataStr.getBytes(StandardCharsets.UTF_8);
+//                inputStream = new ByteArrayInputStream(b);
+//                int len = 0;
+//                while ((len = inputStream.read(buff)) != -1) {
+//                    outputStream.write(buff, 0, len);
+//                }
+//
+////                outputStream.write(b, 0, b.length);
+//                outputStream.write(0x0A);
+//                finishedCount++;
+//                int progress = (finishedCount * 100 / totalRetrievalCount);
+////                logger.debug("finishedCount = " + finishedCount + ", progress = " + progress + "%");
+//                if (!task.updateProgress(progress)) {
+//                    // Already canceled by remote
+//                    // break;
+//                }
+//            }
+//            outputStream.flush();
+//            out.flush();
+//            outputStream.close();
+//            out.close();
+//
+//            if (task.getState() == DownloadState.Downloading) {
+//                task.setState(DownloadState.Finished);
+//            }
+//        }
+////        catch (Exception ex) {
+////            logger.error(ex);
+////            task.setState(DownloadState.Terminated);
+////        }
+//        catch (FileNotFoundException e) {
+//            logger.error("file is not existed!");
+//        } catch (IOException e) {
+//            logger.error("file IO Exception");
+//        } finally {
+//            if (out != null) {
+//                try {
+//                    outputStream.flush();
+//                    out.flush();
+//                    outputStream.close();
+//                    out.close();
+//                } catch (IOException e) {
+//                    logger.error(e);
+//                }
+//            }
+//        }
+//        return filename;
+//    }
+
+
+    @ApiOperation(value = "根据文件名进行下载")
+    @GetMapping(value = "/media/{name}")
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable(value = "name", required = true) String name)
+            throws IOException {
+        FileSystemResource file = new FileSystemResource(ConfigUtil.getConfigFilesDir() + "/records/" + name);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Content-Disposition", name);
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(file.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(new InputStreamResource(file.getInputStream()));
+    }
+
+    @ApiOperation(value = "查询下载进度")
+    @GetMapping("/downloadProgress/{taskId}")
+    public ReturnWrap downloadProgress(@PathVariable("taskId") String taskId) {
+        DownloadTask task = downloadService.getTask(taskId);
+        if (task == null) {
+            return new ReturnWrap(false, "Download task is not existed.");
+        }
+        JSONObject data = new JSONObject();
+        data.put("state", task.getState().toString());
+        data.put("progress", task.getProgress());
+        task.setLastActiveTime(new Date());
+        return new ReturnWrap(true, data);
+    }
+
+    @ApiOperation("取消下载")
+    @GetMapping("/cancelDownload/{taskId}")
+    @ResponseBody
+    public ReturnWrap cancelDownload(@PathVariable("taskId") String taskId) {
+        DownloadTask task = downloadService.getTask(taskId);
+        if (task == null) {
+            return new ReturnWrap(false, "Download task is not existed.");
+        } else if (task.getState() != DownloadState.Downloading) {
+            return new ReturnWrap(false, "Download task is already completed or aborted.");
+        }
+        task.setState(DownloadState.Canceled);
+        return new ReturnWrap();
+    }
+
+
+    public static JSONObject estimateDownload(long size) {
+        long byteInG = 1024 * 1024 * 1024;
+        double usedTime = 1.0 * size / SiteConfigUtil.getPvDataDownloadSpeed();
+        String sizeStr = "";
+        if (size >= byteInG) {
+            sizeStr = new DecimalFormat("0.00GB").format(1.0 * size / byteInG);
+        } else {
+            sizeStr = new DecimalFormat("0.00MB").format(1.0 * size / (1024 * 1024));
+        }
+        String timeStr = "";
+        if (usedTime >= 60 * 60) {
+            timeStr = new DecimalFormat("0.0 housrs").format(usedTime / (60 * 60));
+        } else if (usedTime >= 60) {
+            timeStr = new DecimalFormat("0.0 minutes").format(usedTime / 60);
+        } else {
+            timeStr = new DecimalFormat("0.0 seconds").format(usedTime);
+        }
+        JSONObject result = new JSONObject();
+        result.put("szie", sizeStr);
+        result.put("time", timeStr);
+        return result;
+    }
+
+
+    private void calculateTotalSize(String headStr) {
+        /**
+         * Timestamp,Linac100:PS2:QM5:COUNTER,Linac100:PS2:QM5:AI
+         * 2019/05/06 16:19:24.196,3458482.902072066,3458482.902072066
+         */
+        float totalSeconds = (this.retrieveParms.getTo().getTime() - this.retrieveParms.getFrom().getTime()) / 1000;
+        float maxEventNumber = 0;
+        float eventValueSizeOfOneRaw = "2075/07/05 19:19:19.196".length();
+        for (String pv : this.retrieveParms.getPvs()) {
+            float eventRate = this.retrieveService.getEventRate(pv);
+            if (eventRate == 0) {
+                eventRate = 1.0f;
+            }
+            float totalEventForPV = totalSeconds * eventRate;
+            // each PV has different number of events. The max is used as the number of events for all PVs.
+            maxEventNumber = maxEventNumber > totalEventForPV ? maxEventNumber : totalEventForPV;
+
+            // plus 1 because the split char (",").
+            eventValueSizeOfOneRaw += this.retrieveService.calculateEventValueSize(pv) + 1;
+        }
+
+        // plus 1 because the new line char.
+        totalSize = (long) (headStr.length() + 1 + (maxEventNumber * (eventValueSizeOfOneRaw + 1)));
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

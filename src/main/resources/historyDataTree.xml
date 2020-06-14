@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- this is for home.jsp display configure -->
+<root >
+	<top_group value="BeamCurrent">
+	</top_group >
+	
+	<top_group value="Linac">
+	
+		<mid_group value="GUN">
+ 		</mid_group >
+
+		<mid_group value="PS">
+			<sub_group value="QM"></sub_group >
+ 			<sub_group value="CM"></sub_group >
+ 			<sub_group value="LC-SC-AM"></sub_group >
+		</mid_group >
+		
+		<mid_group value="Microwave">
+  			<sub_group value="LLRF"></sub_group >
+ 		</mid_group >
+
+		<mid_group value="Klystron">
+			<sub_group value="HV"></sub_group >
+  			<sub_group value="K1-err"></sub_group >
+  			<sub_group value="K2-err"></sub_group >
+  			<sub_group value="K3-err"></sub_group >
+  			<sub_group value="K4-err"></sub_group >
+  			<sub_group value="K5-err"></sub_group >
+  			<sub_group value="K6-err"></sub_group >
+  			<sub_group value="K7-err"></sub_group >
+  			<sub_group value="K8-err"></sub_group >
+ 		</mid_group >
+		
+		<mid_group value="BeamMonitor">
+  			<sub_group value="BPM"></sub_group >
+  			<sub_group value="FCTICT"></sub_group >
+  			<sub_group value="ENY"></sub_group >
+  			<sub_group value="PRF"></sub_group >
+			<sub_group value="TEMP"></sub_group >
+		</mid_group >
+ 		
+		<mid_group value="Vacuum">
+			<sub_group value="Pressure"></sub_group >
+  			<sub_group value="Sip"></sub_group >
+ 		</mid_group >
+		
+		
+		<mid_group value="Utility">
+			<sub_group value="QM"></sub_group >
+			<sub_group value="LS-SL"></sub_group >
+ 			<sub_group value="WaterTemp"></sub_group >
+ 			<sub_group value="ValvePosition"></sub_group >
+ 			<sub_group value="WaveGuide"></sub_group >
+ 			<sub_group value="KlyAisleEnvTemp"></sub_group >
+			<sub_group value="BDRoom"></sub_group >
+			<sub_group value="cRIO"></sub_group >
+ 		</mid_group >
+		
+	</top_group >
+	
+	<top_group value="Trans">
+	
+		<mid_group value="PS">
+ 			<sub_group value="QM"></sub_group >
+ 			<sub_group value="CM"></sub_group >
+  			<sub_group value="IC-BM"></sub_group >
+ 		</mid_group >
+
+		<mid_group value="BeamMonitor">
+  			<sub_group value="BPM"></sub_group >
+  			<sub_group value="FCTICT"></sub_group >
+  			<sub_group value="PRF"></sub_group >
+			<sub_group value="TEMP"></sub_group >
+		</mid_group >
+ 		
+		<mid_group value="Utility">
+ 			<sub_group value="BM"></sub_group >
+ 			<sub_group value="QM"></sub_group >
+  			<sub_group value="AM-SwM-ICM"></sub_group >
+ 		</mid_group >
+		
+	</top_group >
+	
+	<top_group value="SR">
+	
+		<mid_group value="PS">
+			<sub_group value="BM-SM-SKM"></sub_group >
+ 			<sub_group value="QM"></sub_group >
+  			<sub_group value="HCM"></sub_group >
+ 			<sub_group value="VCM"></sub_group >
+ 		</mid_group >
+		
+ 		<mid_group value="RF">
+ 			<sub_group value="RF"></sub_group >
+  			<sub_group value="HHC"></sub_group >
+		</mid_group >
+		
+		<mid_group value="Injection">
+		</mid_group >
+ 		
+ 		<mid_group value="BeamMonitor">
+  			<sub_group value="xBPM"></sub_group >
+  			<sub_group value="yBPM"></sub_group >
+  			<sub_group value="FDBK"></sub_group >
+  			<sub_group value="FDBKcount"></sub_group >
+  			<sub_group value="DCCT"></sub_group >
+  			<sub_group value="PRF"></sub_group >
+  			<sub_group value="Efficiency"></sub_group >
+  			<sub_group value="Tune"></sub_group >
+			<sub_group value="BeamLoss"></sub_group >
+			<sub_group value="Dose"></sub_group >
+		</mid_group >
+		
+		<mid_group value="Vacuum">
+  			<sub_group value="Pressure"></sub_group >
+  			<sub_group value="Pressure-PhyName"></sub_group >
+  			<sub_group value="Pressure-BeamLine"></sub_group >
+  			<sub_group value="BeamLineValve"></sub_group >
+  			<sub_group value="Sip"></sub_group >
+		</mid_group >
+		
+		<mid_group value="ID">
+			<sub_group value="IVU"></sub_group >
+			<sub_group value="EPU"></sub_group >
+			<sub_group value="QPU"></sub_group >
+			<sub_group value="WIG"></sub_group >
+			<sub_group value="U92"></sub_group >
+		</mid_group >
+		
+		<mid_group value="Utility">
+			<sub_group value="BM"></sub_group >
+			<sub_group value="QM"></sub_group >
+			<sub_group value="SM"></sub_group >
+			<sub_group value="HHC"></sub_group >
+			<sub_group value="InjChamber"></sub_group >
+			<sub_group value="BPM"></sub_group >
+ 			<sub_group value="HutTemp"></sub_group >
+ 			<sub_group value="EnvTemp"></sub_group >
+			<sub_group value="Absorber"></sub_group >
+ 			<sub_group value="Kicker"></sub_group >
+ 		</mid_group >
+		
+	</top_group >
+	
+</root>

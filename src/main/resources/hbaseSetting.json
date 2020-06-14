@@ -1,0 +1,17 @@
+{"zookeeperQuorum":"192.168.113.81,192.168.113.82,192.168.113.83",
+  "zookeeperClientPort":2181,
+  "pvTableName":"PV",
+  "downsampledPVTableName":"DownsampledPV",
+  "pvIDTableName":"PVId",
+  "pvUUIDTableName":"PVUnId",
+  "jobTableName":"DSJob",
+  "regionSplitBits4PVTable":8,
+  "regionSplitBits4DownSampledTable":5,
+  "cacheRowsWhenScan":300,
+  "maxSecondsForRawSampleRow":300,
+  "maxRowSize":1024,
+  "maxNumberOfPutRows":200,
+  "maxReturnEventsForQuery":2000,
+  "downSampleLevels":[60,3600,86400],
+  "rawDataCreateDownSampleLevelNumber":1
+}

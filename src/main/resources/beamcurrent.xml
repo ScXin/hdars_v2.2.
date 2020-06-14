@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BeamCurrrent>
+	<pv value="Beam Current">
+		<name value="RNG:BEAM:CURR"></name>
+		<unit value="mA"></unit>
+	</pv>
+	<pv value="Operation Schedule">
+		<name value="RNG:OPER:MODE"></name>
+		<unit value=""></unit>
+	</pv>
+	<pv value="Operation Status">
+		<name value="RNG:OPER:STAT"></name>
+		<unit value=""></unit>
+	</pv>
+	<pv value="Lifetime">
+		<name value="RNG:BEAM:LIFE"></name>
+		<unit value="hours"></unit>
+	</pv>
+	<pv value="Energy">
+		<name value="RNG:ENG"></name>
+		<unit value="MeV"></unit>
+	</pv>
+</BeamCurrrent>
