@@ -5,6 +5,9 @@ HDARS作为HLS-II数据查询系统得到一个后端，通过Apache Shiro与hls
 
 HDARS部署在192.168.113.81的/opt/HLS-II-20-07-14目录下，该目录下还包含了源码HLS-II目录。
 
+通过一下命令进行编译打包
+>mvn clean install -Dmaven.test.skip=true
+
 
 
 
