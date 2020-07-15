@@ -257,7 +257,8 @@ package com.hlsii.dao;
 //import com.hlsii.entity.User;
 //import com.hlsii.entity.User;
 import com.commonuser.entity.User;
-import com.hlsii.entity.UserRole;
+//import com.hlsii.entity.UserRole;
+import com.commonuser.entity.UserRole;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -284,7 +285,7 @@ public class UserDao {
      * @return
      */
     public User findByUsername(String username){
-        String sql = "select * from user where username = '" + username + "'";
+        String sql = "select * from user where user_name = '" + username + "'";
         try {
             return jdbcTemplate.queryForObject(sql, new userRowMapper());
         }catch (Exception e){
@@ -459,18 +460,34 @@ public class UserDao {
     /**
      * 将数据库查询结果封装成实体类user对象的方法
      */
-    class userRowMapper implements RowMapper<User>{
+//    class userRowMapper implements RowMapper<User>{
+//        @Override
+//        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+//            User user = new User();
+//            user.setId(rs.getInt("id"));
+//            user.setUsername(rs.getString("username"));
+//            user.setPassword(rs.getString("password"));
+//            user.setSalt(rs.getString("salt"));
+//            user.setCreateTime(rs.getDate("create_time"));
+//            return user;
+//        }
+//    }
+    class userRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             User user = new User();
             user.setId(rs.getInt("id"));
-            user.setUsername(rs.getString("username"));
+            user.setUsername(rs.getString("user_name"));
             user.setPassword(rs.getString("password"));
+            user.setOrganization(rs.getString("organization"));
+            user.setDepartment(rs.getString("department"));
+            user.setEmail(rs.getString("email"));
             user.setSalt(rs.getString("salt"));
             user.setCreateTime(rs.getDate("create_time"));
             return user;
         }
     }
+
 
     /**
      * 将数据库查询结果封装成实体类userRole对象的方法

@@ -11,16 +11,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/hdars/mgmt")
 public class AAMgmtController {
 
-//    @Autowired
-//    private IRecordUserLogService recordUserLogService;
-//
-//
-//    @ApiOperation("得到PV的详细信息")
-//    @RequestMapping("/pvDetails/{pv}")
-//    public String pvDetail(@PathVariable("pv")String pv){
-//
-//
-//
-//        recordUserLogService.logOperation(OperationType.QUERY_PV,pv);
-//    }
 }

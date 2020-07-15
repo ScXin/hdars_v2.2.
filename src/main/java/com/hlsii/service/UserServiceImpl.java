@@ -30,12 +30,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findAllUserInfoByUsername(String username) {
         User user = userDao.findByUsername(username);
-
-        //用户角色集合
-        List<Role> roleList = roleDao.findRoleListByUserId(user.getId());
-
-        user.setRoleList(roleList);
-
+        if (user == null) {
+            return null;
+        }
+        Role role = roleDao.findRoleListByUserId(user.getId());
+        user.setRole(role);
         return user;
     }
 

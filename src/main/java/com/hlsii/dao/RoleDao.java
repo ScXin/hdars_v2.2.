@@ -2,19 +2,19 @@ package com.hlsii.dao;
 
 //import com.hlsii.entity.Role;
 import com.commonuser.entity.Role;
-import com.hlsii.entity.User;
-import com.hlsii.vo.RoleType;
+//import com.hlsii.entity.User;
+//import com.hlsii.vo.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+//import org.springframework.stereotype.Repository;
 
-import javax.jws.soap.SOAPBinding;
-import java.sql.JDBCType;
+//import javax.jws.soap.SOAPBinding;
+//import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 //
 //@Repository
@@ -85,12 +85,12 @@ public class RoleDao {
      * @param userId
      * @return
      */
-    public List<Role> findRoleListByUserId(int userId){
+    public Role findRoleListByUserId(int userId){
         String sql = "select ur.role_id as id, r.name as name, r.description as description" +
                 " from user_role ur" +
                 " left join role r on ur.role_id = r.id" +
                 " where ur.user_id =" + userId;
-        return jdbcTemplate.query(sql, new roleRowMapper1());
+        return jdbcTemplate.queryForObject(sql, new roleRowMapper1());
     }
 
 
@@ -126,18 +126,28 @@ public class RoleDao {
     /**
      * 将数据库查询结果封装成实体类的role对象(包含权限信息)
      */
-    class roleRowMapper1 implements RowMapper<Role>{
+//    class roleRowMapper1 implements RowMapper<Role>{
+//        @Override
+//        public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
+//            Role role = new Role();
+//            role.setId(rs.getInt("id"));
+//            role.setName(rs.getString("name"));
+//            role.setDescription(rs.getString("description"));
+//            role.setPermissionList(permissionDao.findPermissionListByRoleId(rs.getInt("id")));
+//            return role;
+//        }
+//    }
+   static  class roleRowMapper1 implements RowMapper<Role>{
         @Override
         public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
             Role role = new Role();
             role.setId(rs.getInt("id"));
             role.setName(rs.getString("name"));
             role.setDescription(rs.getString("description"));
-            role.setPermissionList(permissionDao.findPermissionListByRoleId(rs.getInt("id")));
+//            role.setPermissionList(permissionDao.findPermissionListByRoleId(rs.getInt("id")));
             return role;
         }
     }
-
 
     /**
      * 将数据库查询结果封装成实体类的role对象（只含有角色信息）

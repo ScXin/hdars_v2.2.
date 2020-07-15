@@ -199,9 +199,7 @@ public class DownloadController {
             retrieveParmsForThisTime.setFrom(start);
             retrieveParmsForThisTime.setTo(end);
             retrieveDataList = retrieveService.retrievePVData(retrieveParmsForThisTime);
-            for (RetrieveData retrieveData : retrieveDataList) {
-                ExportUtil.exportPv(file, retrieveData, retrieveParms, pvNameList);
-            }
+            ExportUtil.exportPv(file, retrieveDataList, retrieveParms, pvNameList);
             finishedCount++;
             int progress = (finishedCount * 100 / totalRetrievalCount);
             logger.debug("finishedCount = " + finishedCount + ", progress = " + progress + "%");
@@ -210,7 +208,6 @@ public class DownloadController {
         if (task.getState() == DownloadState.Downloading) {
             task.setState(DownloadState.Finished);
         }
-
         return filename;
     }
 
@@ -361,108 +358,176 @@ public class DownloadController {
     }
 
 
-//    @ApiOperation("开始下载数据,返回保存数据的文件名")
-//    @GetMapping("/startDownload/{taskid}")
-//    public String startDownload(@PathVariable("taskid") String taskid) {
-//        logger.info("Start download task: " + taskid);
-//        DownloadTask task = downloadService.getTask(taskid);
+    @ApiOperation("开始下载数据,返回保存数据的文件名")
+    @GetMapping("/startDownload4/{taskid}")
+    public String startDownload(@PathVariable("taskid") String taskid) {
+        logger.info("Start download task: " + taskid);
+        DownloadTask task = downloadService.getTask(taskid);
+
+//        System.out.println("DownloadTack=="+task.getId());
+        if (task == null || task.getState() != DownloadState.Created) {
+            logger.info("Download task " + taskid + " not existed.");
+            return null;
+        }
+        String pvs = "";
+        for (String pv : task.getParms().getPvs()) {
+            if (!StringUtils.isEmpty(pvs)) {
+                pvs += ", ";
+            }
+            pvs += pv;
+        }
+//        recordUserLogService.logOperation(OperationType.DOWNLOAD_RAW_DATA, pvs);
+        task.setState(DownloadState.Downloading);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+        Date date = new Date();
+        String filename = simpleDateFormat.format(date) + ".txt";
+        String fileAddr = ConfigUtil.getConfigFilesDir() + "/records/" + filename;
+//        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
 //
-////        System.out.println("DownloadTack=="+task.getId());
-//        if (task == null || task.getState() != DownloadState.Created) {
-//            logger.info("Download task " + taskid + " not existed.");
-//            return null;
+//        response.setContentType("txt");
+        File file = new File(fileAddr);
+//            ServletOutputStream out = response.getOutputStream();
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        FileOutputStream out = null;
+        OutputStream outputStream = null;
+        InputStream inputStream = null;
+        try {
+            out = new FileOutputStream(file, true);
+            outputStream = new BufferedOutputStream(out, 1024 * 1024);
+//            byte[] buff = new byte[1024 * 1024];
+            BufferedRetrieveService in = new BufferedRetrieveService(retrieveService, task.getParms());
+            String dataStr;
+            int totalRetrievalCount = (int) Math.ceil((task.getParms().getTo().getTime() - task.getParms().getFrom().getTime()) /
+                    (SiteConfigUtil.getTimeSlotForDownload() * 1000.0d));
+            logger.debug("totalRetrievalCount = " + totalRetrievalCount);
+            int finishedCount = 0;
+            byte[] buff = new byte[1024 * 8];
+            while ((dataStr = in.read()) != null) {
+                byte[] b = dataStr.getBytes(StandardCharsets.UTF_8);
+                inputStream = new ByteArrayInputStream(b);
+                int len = 0;
+                while ((len = inputStream.read(buff)) != -1) {
+                    outputStream.write(buff, 0, len);
+                }
+//                outputStream.write(b, 0, b.length);
+                outputStream.write(0x0A);
+                finishedCount++;
+                int progress = (finishedCount * 100 / totalRetrievalCount);
+//                logger.debug("finishedCount = " + finishedCount + ", progress = " + progress + "%");
+                if (!task.updateProgress(progress)) {
+                    // Already canceled by remote
+                    // break;
+                }
+            }
+            outputStream.flush();
+            out.flush();
+            outputStream.close();
+            out.close();
+
+            if (task.getState() == DownloadState.Downloading) {
+                task.setState(DownloadState.Finished);
+            }
+        }
+//        catch (Exception ex) {
+//            logger.error(ex);
+//            task.setState(DownloadState.Terminated);
 //        }
-//        String pvs = "";
-//        for (String pv : task.getParms().getPvs()) {
-//            if (!StringUtils.isEmpty(pvs)) {
-//                pvs += ", ";
-//            }
-//            pvs += pv;
-//        }
-////        recordUserLogService.logOperation(OperationType.DOWNLOAD_RAW_DATA, pvs);
-//        task.setState(DownloadState.Downloading);
-//
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
-//        Date date = new Date();
-//        String filename = simpleDateFormat.format(date) + ".txt";
-//        String fileAddr = ConfigUtil.getConfigFilesDir() + "/records/" + filename;
-////        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
-////
-////        response.setContentType("txt");
-//        File file = new File(fileAddr);
-////            ServletOutputStream out = response.getOutputStream();
-//        if (!file.exists()) {
-//            try {
-//                file.createNewFile();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        FileOutputStream out = null;
-//        OutputStream outputStream = null;
-//        InputStream inputStream = null;
-//        try {
-//
-//            out = new FileOutputStream(file, true);
-//            outputStream = new BufferedOutputStream(out, 1024 * 1024);
-////            byte[] buff = new byte[1024 * 1024];
-//            BufferedRetrieveService in = new BufferedRetrieveService(retrieveService, task.getParms());
-//            String dataStr;
-//            int totalRetrievalCount = (int) Math.ceil((task.getParms().getTo().getTime() - task.getParms().getFrom().getTime()) /
-//                    (SiteConfigUtil.getTimeSlotForDownload() * 1000.0d));
-//            logger.debug("totalRetrievalCount = " + totalRetrievalCount);
-//            int finishedCount = 0;
-//            byte[] buff = new byte[1024 * 8];
-//            while ((dataStr = in.read()) != null) {
-//                byte[] b = dataStr.getBytes(StandardCharsets.UTF_8);
-//                inputStream = new ByteArrayInputStream(b);
-//                int len = 0;
-//                while ((len = inputStream.read(buff)) != -1) {
-//                    outputStream.write(buff, 0, len);
-//                }
-//
-////                outputStream.write(b, 0, b.length);
-//                outputStream.write(0x0A);
-//                finishedCount++;
-//                int progress = (finishedCount * 100 / totalRetrievalCount);
-////                logger.debug("finishedCount = " + finishedCount + ", progress = " + progress + "%");
-//                if (!task.updateProgress(progress)) {
-//                    // Already canceled by remote
-//                    // break;
-//                }
-//            }
-//            outputStream.flush();
-//            out.flush();
-//            outputStream.close();
-//            out.close();
-//
-//            if (task.getState() == DownloadState.Downloading) {
-//                task.setState(DownloadState.Finished);
-//            }
-//        }
-////        catch (Exception ex) {
-////            logger.error(ex);
-////            task.setState(DownloadState.Terminated);
-////        }
-//        catch (FileNotFoundException e) {
-//            logger.error("file is not existed!");
-//        } catch (IOException e) {
-//            logger.error("file IO Exception");
-//        } finally {
-//            if (out != null) {
-//                try {
-//                    outputStream.flush();
-//                    out.flush();
-//                    outputStream.close();
-//                    out.close();
-//                } catch (IOException e) {
-//                    logger.error(e);
-//                }
-//            }
-//        }
-//        return filename;
-//    }
+        catch (FileNotFoundException e) {
+            logger.error("file is not existed!");
+        } catch (IOException e) {
+            logger.error("file IO Exception");
+        } finally {
+            if (out != null) {
+                try {
+                    outputStream.flush();
+                    out.flush();
+                    outputStream.close();
+                    out.close();
+                } catch (IOException e) {
+                    logger.error(e);
+                }
+            }
+        }
+        return filename;
+    }
+
+    /**
+     * This is cosylab download method
+     * @param request
+     * @param response
+     * @param taskid
+     */
+
+    @GetMapping("/startDownload3")
+    public void startDownload(HttpServletRequest request, HttpServletResponse response, String taskid) {
+        logger.info("Start download task: " + taskid);
+        DownloadTask task = downloadService.getTask(taskid);
+
+        if (task == null || task.getState() != DownloadState.Created) {
+            logger.info("Download task " + taskid + " not existed.");
+            return;
+        }
+        String pvs = "";
+        for(String pv : task.getParms().getPvs()) {
+            if (!StringUtils.isEmpty(pvs)) {
+                pvs += ", ";
+            }
+            pvs += pv;
+        }
+//        recordUserLogService.logOperation(OperationType.DOWNLOAD_RAW_DATA, pvs);
+        task.setState(DownloadState.Downloading);
+        //String filename = "download.csv";
+        String filename = "download.txt";
+        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+        //response.setContentType("text/csv");
+        response.setContentType("txt");
+
+        try {
+            ServletOutputStream out = response.getOutputStream();
+            BufferedRetrieveService in = new BufferedRetrieveService(retrieveService, task.getParms());
+            /*
+            long length = in.getTransferSize();
+            if (length <= Integer.MAX_VALUE) {
+                response.setContentLength((int)length);
+            } else {
+                response.addHeader("Content-Length", Long.toString(length));
+            }
+            */
+            String dataStr;
+            int totalRetrievalCount = (int)Math.ceil((task.getParms().getTo().getTime() - task.getParms().getFrom().getTime()) /
+                    (SiteConfigUtil.getTimeSlotForDownload() * 1000.0d));
+            logger.debug("totalRetrievalCount = " + totalRetrievalCount);
+            int finishedCount = 0;
+            while ((dataStr = in.read()) != null) {
+                byte[] b = dataStr.getBytes(StandardCharsets.UTF_8);
+                out.write(b, 0, b.length);
+                out.write(0x0A);
+                finishedCount++;
+                int progress = (finishedCount * 100 / totalRetrievalCount);
+                logger.debug("finishedCount = " + finishedCount + ", progress = " + progress + "%");
+                if (!task.updateProgress(progress)) {
+                    // Already canceled by remote
+                    // break;
+                }
+            }
+            out.flush();
+            out.close();
+            if (task.getState() == DownloadState.Downloading) {
+                task.setState(DownloadState.Finished);
+            }
+        } catch (Exception ex) {
+            logger.error(ex);
+            task.setState(DownloadState.Terminated);
+        }
+    }
+
 
 
     @ApiOperation(value = "根据文件名进行下载")

@@ -29961,3 +29961,154 @@ INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Try to get the v
 INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Initialize HadoopStorageHBaseImpl with the config file G:\nsrl\hdars\config\hbaseSetting.json
 INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connect to :192.168.113.81,192.168.113.82,192.168.113.83:2181
 INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connection established.
+INFO pool-3-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation.
+DEBUG pool-3-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Initializing a Hazelcast client.
+DEBUG pool-3-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Cluster_inetport 192.168.113.81:16670 for appliance appliance1
+INFO pool-3-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Add Hazelcast server address 192.168.113.81:16670
+INFO pool-3-thread-1 com.hlsii.service.AARetrieveServiceImplementation - client network config conn attempt limit: 0client network config conn attempt period: 3,000client network config conn timeout: 5,000client network config addresses: 192.168.113.81:16670client network config is redo: falseclient config properties: {hazelcast.logging.type=log4j}
+INFO pool-3-thread-1 com.hazelcast.client.HazelcastClient - hz.client_1 [archappl] [3.12.6] A non-empty group password is configured for the Hazelcast client. Starting with Hazelcast version 3.11, clients with the same group name, but with different group passwords (that do not use authentication) will be accepted to a cluster. The group password configuration will be removed completely in a future release.
+INFO main com.hlsii.service.AARetrieveServiceImplementation - Receive shutdown signal.
+INFO pool-3-thread-1 com.hazelcast.client.spi.ClientInvocationService - hz.client_1 [archappl] [3.12.6] Running with 2 response threads, dynamic=false
+INFO pool-3-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTING
+INFO pool-3-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTED
+DEBUG pool-3-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] TcpIpConnectionManager configured with Non Blocking IO-threading model: 1 input threads and 1 output threads
+DEBUG pool-3-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] IO threads selector mode is SELECT
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to cluster with name: archappl
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to [192.168.113.81]:16670 as owner member
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Setting ClientConnection{alive=true, connectionId=1, channel=NioChannel{/192.168.125.109:14383->/192.168.113.81:16670}, remoteEndpoint=[192.168.113.81]:16670, lastReadTime=2020-07-14 17:02:21.730, lastWriteTime=2020-07-14 17:02:21.728, closedTime=never, connected server version=3.10.1} as owner with principal ClientPrincipal{uuid='cabb8b82-0530-43a2-a9e9-ab107d263141', ownerUuid='fd925151-c42d-42e4-86d1-6c05081a3ce8'}
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Authenticated with server [192.168.113.81]:16670, server version:3.10.1 Local address: /192.168.125.109:14383
+INFO hz.client_1.event-3 com.hazelcast.client.spi.impl.ClientMembershipListener - hz.client_1 [archappl] [3.12.6] 
+
+Members [1] {
+	Member [192.168.113.81]:16670 - fd925151-c42d-42e4-86d1-6c05081a3ce8
+}
+
+INFO hz.client_1.cluster- com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is CLIENT_CONNECTED
+INFO pool-3-thread-1 com.hazelcast.internal.diagnostics.Diagnostics - hz.client_1 [archappl] [3.12.6] Diagnostics disabled. To enable add -Dhazelcast.diagnostics.enabled=true to the JVM arguments.
+INFO pool-3-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Try to add member [192.168.113.81]:16670 to my set.
+DEBUG pool-3-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Establishing a cluster membership listener to detect when appliances drop off the cluster
+INFO pool-3-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation completed.
+INFO pool-3-thread-1 com.hlsii.service.HadoopStorageSingleton - Try to get the value of the environment variable HADARS_CONFIG_DIR
+INFO pool-3-thread-1 com.hlsii.service.HadoopStorageSingleton - Initialize HadoopStorageHBaseImpl with the config file G:\nsrl\hdars\config\hbaseSetting.json
+INFO pool-3-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connect to :192.168.113.81,192.168.113.82,192.168.113.83:2181
+INFO pool-3-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connection established.
+INFO pool-2-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation.
+DEBUG pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Initializing a Hazelcast client.
+DEBUG pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Cluster_inetport 192.168.113.81:16670 for appliance appliance1
+INFO pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Add Hazelcast server address 192.168.113.81:16670
+INFO pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - client network config conn attempt limit: 0client network config conn attempt period: 3,000client network config conn timeout: 5,000client network config addresses: 192.168.113.81:16670client network config is redo: falseclient config properties: {hazelcast.logging.type=log4j}
+INFO pool-2-thread-1 com.hazelcast.client.HazelcastClient - hz.client_1 [archappl] [3.12.6] A non-empty group password is configured for the Hazelcast client. Starting with Hazelcast version 3.11, clients with the same group name, but with different group passwords (that do not use authentication) will be accepted to a cluster. The group password configuration will be removed completely in a future release.
+INFO pool-2-thread-1 com.hazelcast.client.spi.ClientInvocationService - hz.client_1 [archappl] [3.12.6] Running with 2 response threads, dynamic=false
+INFO pool-2-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTING
+INFO pool-2-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTED
+DEBUG pool-2-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] TcpIpConnectionManager configured with Non Blocking IO-threading model: 1 input threads and 1 output threads
+DEBUG pool-2-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] IO threads selector mode is SELECT
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to cluster with name: archappl
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to [192.168.113.81]:16670 as owner member
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Setting ClientConnection{alive=true, connectionId=1, channel=NioChannel{/192.168.125.109:14484->/192.168.113.81:16670}, remoteEndpoint=[192.168.113.81]:16670, lastReadTime=2020-07-14 17:02:59.149, lastWriteTime=2020-07-14 17:02:59.147, closedTime=never, connected server version=3.10.1} as owner with principal ClientPrincipal{uuid='140a587c-3d54-488b-8dd1-220559324961', ownerUuid='fd925151-c42d-42e4-86d1-6c05081a3ce8'}
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Authenticated with server [192.168.113.81]:16670, server version:3.10.1 Local address: /192.168.125.109:14484
+INFO hz.client_1.event-1 com.hazelcast.client.spi.impl.ClientMembershipListener - hz.client_1 [archappl] [3.12.6] 
+
+Members [1] {
+	Member [192.168.113.81]:16670 - fd925151-c42d-42e4-86d1-6c05081a3ce8
+}
+
+INFO hz.client_1.cluster- com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is CLIENT_CONNECTED
+INFO pool-2-thread-1 com.hazelcast.internal.diagnostics.Diagnostics - hz.client_1 [archappl] [3.12.6] Diagnostics disabled. To enable add -Dhazelcast.diagnostics.enabled=true to the JVM arguments.
+INFO pool-2-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Try to add member [192.168.113.81]:16670 to my set.
+DEBUG pool-2-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Establishing a cluster membership listener to detect when appliances drop off the cluster
+INFO pool-2-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation completed.
+INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Try to get the value of the environment variable HADARS_CONFIG_DIR
+INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Initialize HadoopStorageHBaseImpl with the config file G:\nsrl\hdars\config\hbaseSetting.json
+INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connect to :192.168.113.81,192.168.113.82,192.168.113.83:2181
+INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connection established.
+INFO pool-2-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation.
+DEBUG pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Initializing a Hazelcast client.
+DEBUG pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Cluster_inetport 192.168.113.81:16670 for appliance appliance1
+INFO pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Add Hazelcast server address 192.168.113.81:16670
+INFO pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - client network config conn attempt limit: 0client network config conn attempt period: 3,000client network config conn timeout: 5,000client network config addresses: 192.168.113.81:16670client network config is redo: falseclient config properties: {hazelcast.logging.type=log4j}
+INFO pool-2-thread-1 com.hazelcast.client.HazelcastClient - hz.client_1 [archappl] [3.12.6] A non-empty group password is configured for the Hazelcast client. Starting with Hazelcast version 3.11, clients with the same group name, but with different group passwords (that do not use authentication) will be accepted to a cluster. The group password configuration will be removed completely in a future release.
+INFO pool-2-thread-1 com.hazelcast.client.spi.ClientInvocationService - hz.client_1 [archappl] [3.12.6] Running with 2 response threads, dynamic=false
+INFO pool-2-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTING
+INFO pool-2-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTED
+DEBUG pool-2-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] TcpIpConnectionManager configured with Non Blocking IO-threading model: 1 input threads and 1 output threads
+DEBUG pool-2-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] IO threads selector mode is SELECT
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to cluster with name: archappl
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to [192.168.113.81]:16670 as owner member
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Setting ClientConnection{alive=true, connectionId=1, channel=NioChannel{/192.168.125.109:6335->/192.168.113.81:16670}, remoteEndpoint=[192.168.113.81]:16670, lastReadTime=2020-07-14 18:30:13.062, lastWriteTime=2020-07-14 18:30:13.060, closedTime=never, connected server version=3.10.1} as owner with principal ClientPrincipal{uuid='fede7eb1-2521-4aa6-87b6-9cacf95cbf60', ownerUuid='fd925151-c42d-42e4-86d1-6c05081a3ce8'}
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Authenticated with server [192.168.113.81]:16670, server version:3.10.1 Local address: /192.168.125.109:6335
+INFO hz.client_1.event-4 com.hazelcast.client.spi.impl.ClientMembershipListener - hz.client_1 [archappl] [3.12.6] 
+
+Members [1] {
+	Member [192.168.113.81]:16670 - fd925151-c42d-42e4-86d1-6c05081a3ce8
+}
+
+INFO hz.client_1.cluster- com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is CLIENT_CONNECTED
+INFO pool-2-thread-1 com.hazelcast.internal.diagnostics.Diagnostics - hz.client_1 [archappl] [3.12.6] Diagnostics disabled. To enable add -Dhazelcast.diagnostics.enabled=true to the JVM arguments.
+INFO pool-2-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Try to add member [192.168.113.81]:16670 to my set.
+DEBUG pool-2-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Establishing a cluster membership listener to detect when appliances drop off the cluster
+INFO pool-2-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation completed.
+INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Try to get the value of the environment variable HADARS_CONFIG_DIR
+INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Initialize HadoopStorageHBaseImpl with the config file G:\nsrl\hdars\config\hbaseSetting.json
+INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connect to :192.168.113.81,192.168.113.82,192.168.113.83:2181
+INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connection established.
+INFO pool-2-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation.
+DEBUG pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Initializing a Hazelcast client.
+DEBUG pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Cluster_inetport 192.168.113.81:16670 for appliance appliance1
+INFO pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Add Hazelcast server address 192.168.113.81:16670
+INFO pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - client network config conn attempt limit: 0client network config conn attempt period: 3,000client network config conn timeout: 5,000client network config addresses: 192.168.113.81:16670client network config is redo: falseclient config properties: {hazelcast.logging.type=log4j}
+INFO pool-2-thread-1 com.hazelcast.client.HazelcastClient - hz.client_1 [archappl] [3.12.6] A non-empty group password is configured for the Hazelcast client. Starting with Hazelcast version 3.11, clients with the same group name, but with different group passwords (that do not use authentication) will be accepted to a cluster. The group password configuration will be removed completely in a future release.
+INFO pool-2-thread-1 com.hazelcast.client.spi.ClientInvocationService - hz.client_1 [archappl] [3.12.6] Running with 2 response threads, dynamic=false
+INFO pool-2-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTING
+INFO pool-2-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTED
+DEBUG pool-2-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] TcpIpConnectionManager configured with Non Blocking IO-threading model: 1 input threads and 1 output threads
+DEBUG pool-2-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] IO threads selector mode is SELECT
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to cluster with name: archappl
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to [192.168.113.81]:16670 as owner member
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Setting ClientConnection{alive=true, connectionId=1, channel=NioChannel{/192.168.125.109:8543->/192.168.113.81:16670}, remoteEndpoint=[192.168.113.81]:16670, lastReadTime=2020-07-14 18:59:15.929, lastWriteTime=2020-07-14 18:59:15.927, closedTime=never, connected server version=3.10.1} as owner with principal ClientPrincipal{uuid='c638dda5-ad06-4a0a-aab6-2ba6f97c53a7', ownerUuid='fd925151-c42d-42e4-86d1-6c05081a3ce8'}
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Authenticated with server [192.168.113.81]:16670, server version:3.10.1 Local address: /192.168.125.109:8543
+INFO hz.client_1.event-1 com.hazelcast.client.spi.impl.ClientMembershipListener - hz.client_1 [archappl] [3.12.6] 
+
+Members [1] {
+	Member [192.168.113.81]:16670 - fd925151-c42d-42e4-86d1-6c05081a3ce8
+}
+
+INFO hz.client_1.cluster- com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is CLIENT_CONNECTED
+INFO pool-2-thread-1 com.hazelcast.internal.diagnostics.Diagnostics - hz.client_1 [archappl] [3.12.6] Diagnostics disabled. To enable add -Dhazelcast.diagnostics.enabled=true to the JVM arguments.
+INFO pool-2-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Try to add member [192.168.113.81]:16670 to my set.
+DEBUG pool-2-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Establishing a cluster membership listener to detect when appliances drop off the cluster
+INFO pool-2-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation completed.
+INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Try to get the value of the environment variable HADARS_CONFIG_DIR
+INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Initialize HadoopStorageHBaseImpl with the config file G:\nsrl\hdars\config\hbaseSetting.json
+INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connect to :192.168.113.81,192.168.113.82,192.168.113.83:2181
+INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connection established.
+INFO pool-2-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation.
+DEBUG pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Initializing a Hazelcast client.
+DEBUG pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Cluster_inetport 192.168.113.81:16670 for appliance appliance1
+INFO pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - Add Hazelcast server address 192.168.113.81:16670
+INFO pool-2-thread-1 com.hlsii.service.AARetrieveServiceImplementation - client network config conn attempt limit: 0client network config conn attempt period: 3,000client network config conn timeout: 5,000client network config addresses: 192.168.113.81:16670client network config is redo: falseclient config properties: {hazelcast.logging.type=log4j}
+INFO pool-2-thread-1 com.hazelcast.client.HazelcastClient - hz.client_1 [archappl] [3.12.6] A non-empty group password is configured for the Hazelcast client. Starting with Hazelcast version 3.11, clients with the same group name, but with different group passwords (that do not use authentication) will be accepted to a cluster. The group password configuration will be removed completely in a future release.
+INFO pool-2-thread-1 com.hazelcast.client.spi.ClientInvocationService - hz.client_1 [archappl] [3.12.6] Running with 2 response threads, dynamic=false
+INFO pool-2-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTING
+INFO pool-2-thread-1 com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is STARTED
+DEBUG pool-2-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] TcpIpConnectionManager configured with Non Blocking IO-threading model: 1 input threads and 1 output threads
+DEBUG pool-2-thread-1 com.hazelcast.internal.networking.nio.NioNetworking - hz.client_1 [archappl] [3.12.6] IO threads selector mode is SELECT
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to cluster with name: archappl
+INFO hz.client_1.cluster- com.hazelcast.client.connection.nio.ClusterConnectorService - hz.client_1 [archappl] [3.12.6] Trying to connect to [192.168.113.81]:16670 as owner member
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Setting ClientConnection{alive=true, connectionId=1, channel=NioChannel{/192.168.125.109:8731->/192.168.113.81:16670}, remoteEndpoint=[192.168.113.81]:16670, lastReadTime=2020-07-14 19:00:33.048, lastWriteTime=2020-07-14 19:00:33.046, closedTime=never, connected server version=3.10.1} as owner with principal ClientPrincipal{uuid='109d4c3b-17ac-4e0d-b393-37c3603b5a66', ownerUuid='fd925151-c42d-42e4-86d1-6c05081a3ce8'}
+INFO hz.client_1.internal-2 com.hazelcast.client.connection.ClientConnectionManager - hz.client_1 [archappl] [3.12.6] Authenticated with server [192.168.113.81]:16670, server version:3.10.1 Local address: /192.168.125.109:8731
+INFO hz.client_1.event-5 com.hazelcast.client.spi.impl.ClientMembershipListener - hz.client_1 [archappl] [3.12.6] 
+
+Members [1] {
+	Member [192.168.113.81]:16670 - fd925151-c42d-42e4-86d1-6c05081a3ce8
+}
+
+INFO hz.client_1.cluster- com.hazelcast.core.LifecycleService - hz.client_1 [archappl] [3.12.6] HazelcastClient 3.12.6 (20200130 - be02cc5) is CLIENT_CONNECTED
+INFO pool-2-thread-1 com.hazelcast.internal.diagnostics.Diagnostics - hz.client_1 [archappl] [3.12.6] Diagnostics disabled. To enable add -Dhazelcast.diagnostics.enabled=true to the JVM arguments.
+INFO pool-2-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Try to add member [192.168.113.81]:16670 to my set.
+DEBUG pool-2-thread-1 com.hlsii.service.HazelcastClusterStateMonitor - Establishing a cluster membership listener to detect when appliances drop off the cluster
+INFO pool-2-thread-1 com.hlsii.service.RetrieveServiceImplementation - Initialize aaRetrieveServiceImplementation completed.
+INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Try to get the value of the environment variable HADARS_CONFIG_DIR
+INFO pool-2-thread-1 com.hlsii.service.HadoopStorageSingleton - Initialize HadoopStorageHBaseImpl with the config file G:\nsrl\hdars\config\hbaseSetting.json
+INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connect to :192.168.113.81,192.168.113.82,192.168.113.83:2181
+INFO pool-2-thread-1 hadarshbaseplugin.HadoopStorageHBaseImpl - connection established.

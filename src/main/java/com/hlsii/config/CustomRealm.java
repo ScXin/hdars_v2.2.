@@ -7,6 +7,7 @@ package com.hlsii.config;
 import com.commonuser.entity.Permission;
 import com.commonuser.entity.Role;
 import com.commonuser.entity.User;
+import com.hlsii.service.UserService;
 import com.hlsii.service.UserServiceImpl;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -29,7 +30,7 @@ import java.util.List;
 public class CustomRealm extends AuthorizingRealm {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     /**
      * 进行权限校验的时候回调用
@@ -39,30 +40,30 @@ public class CustomRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        System.out.println("授权 doGetAuthorizationInfo");
+//        System.out.println("授权 doGetAuthorizationInfo");
 
         User newUser = (User) principals.getPrimaryPrincipal();
-        User user = userService.findAllUserInfoByUsername(newUser.getUsername());
+        //        System.out.println("授权方法doGetAuthorizationInfo");
 
+        User user = userService.findAllUserInfoByUsername(newUser.getUsername());
+        if (user == null) {
+            return null;
+        }
+//        List<Role> roleList = user.getRoleList();
+        Role role = user.getRole();
         List<String> stringRoleList = new ArrayList<>();
         List<String> stringPermissionList = new ArrayList<>();
-
-        List<Role> roleList = user.getRoleList();
-
-        for (Role role : roleList) {
-            stringRoleList.add(role.getName());
-
-            List<Permission> permissionList = role.getPermissionList();
-
-            for (Permission p : permissionList) {
-                if (p != null) {
-                    stringPermissionList.add(p.getName());
-                }
-            }
-        }
+        stringRoleList.add(role.getName());
+        List<Permission> permissionList = role.getPermissionList();
+//        for (Permission permission : permissionList) {
+//                if (permission != null) {
+//                    stringPermissionList.add(permission.getName());
+//                }
+//            }
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.addRoles(stringRoleList);
-//        simpleAuthorizationInfo.addStringPermissions(stringPermissionList);
+        simpleAuthorizationInfo.addStringPermissions(stringPermissionList);
+
         return simpleAuthorizationInfo;
     }
 

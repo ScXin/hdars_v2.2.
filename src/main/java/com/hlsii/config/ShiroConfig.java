@@ -12,7 +12,7 @@ import org.apache.shiro.web.servlet.SimpleCookie;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 //import org.crazycake.shiro.RedisSessionDAO;
-import org.immutables.value.Value;
+//import org.immutables.value.Value;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
