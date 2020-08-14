@@ -26,7 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.security.krb5.Config;
+//import sun.security.krb5.Config;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;

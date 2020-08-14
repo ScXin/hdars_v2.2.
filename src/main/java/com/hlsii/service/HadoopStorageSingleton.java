@@ -29,7 +29,7 @@ public class HadoopStorageSingleton {
             }
             String hbaseSettingFile = ConfigUtil.getConfigFilesDir() + File.separator + "hbaseSetting.json";
             logger.info(MessageFormat.format("Try to get the value of the environment variable {0}",
-                    Constants.HADARS_CONFIG_DIR));
+                    Constants.HDARS_CONFIG_DIR));
             logger.info(MessageFormat.format("Initialize HadoopStorageHBaseImpl with the config file {0}",
                     hbaseSettingFile));
             try {
