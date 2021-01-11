@@ -71,7 +71,7 @@ public class BeamCurrentUtil {
             for (Element node : nodes) {
                 BeamCurrentPV pv = parsePV(node);
                 if (pv == null) {
-                    logger.warn("Invalid pv configurartion in beam current");
+                   // logger.warn("Invalid pv configurartion in beam current");
                 }
                 else {
                     pvMap.put(pv.getPvTitle(), pv);

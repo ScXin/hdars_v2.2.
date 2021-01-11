@@ -33,7 +33,7 @@ public class HazelcastClusterStateMonitor implements IHazelcastClusterStateMonit
                 logger.warn("no member in cluster yet!");
             } else {
                 for (Member member : memberSet) {
-                    logger.info("Try to add member " + member.getAddress().toString() + " to my set.");
+                   // logger.info("Try to add member " + member.getAddress().toString() + " to my set.");
                     String aaString = buildAAString(member);
                     if (aaString != null) {
                         appliancesInCluster.add(aaString);
@@ -50,12 +50,12 @@ public class HazelcastClusterStateMonitor implements IHazelcastClusterStateMonit
                 clusterState = event.getState();
             });
 
-            logger.debug("Establishing a cluster membership listener to detect when appliances drop off the cluster");
+            //logger.debug("Establishing a cluster membership listener to detect when appliances drop off the cluster");
 
             cluster.addMembershipListener(new MembershipListener() {
                 public void memberAdded(MembershipEvent membersipEvent) {
                     Member member = membersipEvent.getMember();
-                    logger.info("Member " + member.getAddress().toString() + " is added.");
+                   // logger.info("Member " + member.getAddress().toString() + " is added.");
                     String aaString = buildAAString(member);
                     if (aaString != null) {
                         appliancesInCluster.add(aaString);

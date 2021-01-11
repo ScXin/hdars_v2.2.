@@ -268,7 +268,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
                     parm.getPostProcessIdentity(), parm.getIntervalSeconds(), enableHBaseCache, getSamplePeriod(pvName));
 
             if (eventList == null) {
-                logger.error(MessageFormat.format("Retrieve PV {0} data from Hadoop failure.", pvName));
+                //logger.error(MessageFormat.format("Retrieve PV {0} data from Hadoop failure.", pvName));
                 return null;
             }
 
@@ -279,7 +279,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
                     JSONObject eventObject = Event2JSON(pvName, event, parm.getPvDataFormat(), v4Flag);
                     eventArray.add(eventObject);
                 } else {
-                    logger.warn("This is a null event from Hadoop for PV " + pvName);
+                  //  logger.warn("This is a null event from Hadoop for PV " + pvName);
                 }
             }
 
@@ -405,7 +405,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
                     }
                 }
             } catch (Exception ex) {
-                logger.debug(MessageFormat.format("Exception on parsing valueStr: {0}", valueStr));
+               // logger.debug(MessageFormat.format("Exception on parsing valueStr: {0}", valueStr));
             }
         }
 
@@ -509,10 +509,10 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
         if (hadoopRetrieveService == null) {
             return;
         }
-        logger.info("Checking Hbase health status ...");
+      //  logger.info("Checking Hbase health status ...");
         List<PVTypeInfo> pvInfos = new ArrayList<>(aaRetrieveService.getAllPVInfo());
         if (pvInfos.isEmpty()) {
-            logger.info("No archving PV.");
+           // logger.info("No archving PV.");
             return;
         }
         // Use the first PV for the checking

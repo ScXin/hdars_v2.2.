@@ -135,25 +135,25 @@ public class RetrievalMetricsImplementation implements IRetrievalMetrics {
     @Override
     public void addRetrievalMetrics(long ms, PVDataFromStore pvDataFromStore) {
         if (pvDataFromStore == null) {
-            logger.error("pvDataFromStore is null. Ignore the metrics.");
+           // logger.error("pvDataFromStore is null. Ignore the metrics.");
             return;
         }
 
         if (pvDataFromStore.getDataStore() == null) {
-            logger.error("pvDataFromStore.getDataStore() is null. Ignore the metrics.");
+            //logger.error("pvDataFromStore.getDataStore() is null. Ignore the metrics.");
             return;
         }
 
         RetrieveData retrieveData = pvDataFromStore.getRetrieveData();
         if (retrieveData == null) {
-            logger.error("pvDataFromStore.getDataStore() is null. Ignore the metrics.");
+            //logger.error("pvDataFromStore.getDataStore() is null. Ignore the metrics.");
             return;
         }
 
         DataStoreRetrievalMetrics metrics = dataStoreMetricsMap.get(pvDataFromStore.getDataStore());
         if (metrics == null) {
-            logger.error(MessageFormat.format("The data store {0} is unknown. Ignore the metrics.",
-                    pvDataFromStore.getDataStore().toString()));
+            //logger.error(MessageFormat.format("The data store {0} is unknown. Ignore the metrics.",
+              //      pvDataFromStore.getDataStore().toString()));
             return;
         }
 

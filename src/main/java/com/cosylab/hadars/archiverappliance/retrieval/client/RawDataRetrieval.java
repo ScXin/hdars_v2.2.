@@ -84,7 +84,7 @@ public class RawDataRetrieval implements DataRetrieval {
             }
         }
         String getURL = buf.toString();
-        logger.info("URL to fetch data is " + getURL);
+        //logger.info("URL to fetch data is " + getURL);
         try {
             URL url = new URL(getURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -94,7 +94,7 @@ public class RawDataRetrieval implements DataRetrieval {
                 if(is.available() <= 0) return null;
                 return new InputStreamBackedEventStream(is);
             } else {
-                logger.info("No data found for PV " + pvName + " + using URL " + url.toString());
+              //  logger.info("No data found for PV " + pvName + " + using URL " + url.toString());
                 return null;
             }
         } catch(Exception ex) {

@@ -77,7 +77,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
         }
 
         try {
-            logger.debug("Initializing a Hazelcast client.");
+            //logger.debug("Initializing a Hazelcast client.");
 
             ClientConfig clientConfig = new XmlClientConfigBuilder().build();
             clientConfig.getGroupConfig().setName("archappl");
@@ -97,14 +97,14 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
             clientConfig.setProperty("hazelcast.logging.type", "log4j");
 
             if (!hzThreadCounts.isEmpty()) {
-                logger.info("Reducing the generic clustering thread counts.");
+             //   logger.info("Reducing the generic clustering thread counts.");
                 clientConfig.getProperties().putAll(hzThreadCounts);
             }
 
             if (!logger.isDebugEnabled()) {
                 // The client code logs some SEVERE exceptions on shutdown when deploying on the same Tomcat container.
                 // These exceptions are confusing; ideally, we would not have to set the log levels like so.
-                Logger.getLogger("com.hazelcast.client.spi.impl.ClusterListenerThread").setLevel(Level.OFF);
+               Logger.getLogger("com.hazelcast.client.spi.impl.ClusterListenerThread").setLevel(Level.OFF);
                 Logger.getLogger("com.hazelcast.client.spi.ClientPartitionService").setLevel(Level.OFF);
             }
             logger.info(MessageFormat.format("client network config conn attempt limit: {0}" +

@@ -109,7 +109,7 @@ public class HdarsApiController {
             result = retrieveService.retrievePVData(retrieveParms);
         } catch (Exception ex) {
             String msg = "Exception at retrieving data: " + ex.toString();
-            logger.info(msg);
+           // logger.info(msg);
             return new ReturnWrap("1", msg);
         }
         ReturnWrap rc = new ReturnWrap();
@@ -138,7 +138,7 @@ public class HdarsApiController {
             rw = new ReturnWrap(true, data);
         } catch (IOException ex) {        //catch exception,and return to back-End
             String msg = "Exception at statistic:" + ex.toString();
-            logger.info(msg);
+           // logger.info(msg);
             rw = new ReturnWrap("1", msg);
         }
         return rw;
@@ -248,7 +248,7 @@ public class HdarsApiController {
             }
         } catch (Exception ex) {
             String msg = "Exception at retrieving data: " + ex.toString();
-            logger.info(msg);
+           // logger.info(msg);
             return 0;
         }
         return count;
@@ -302,7 +302,7 @@ public class HdarsApiController {
             }
         } catch (Exception ex) {
             String msg = "Exception at retrieving data: " + ex.toString();
-            logger.info(msg);
+           // logger.info(msg);
             return null;
         }
         return pageDataMap;

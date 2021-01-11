@@ -415,7 +415,7 @@ public class ArchiverSystemService implements IArchiverSystemService {
      *
      */
     private void checkApplianceStatus() {
-        logger.debug("Checking appliance status ...");
+       // logger.debug("Checking appliance status ...");
         List<String> activeAppliances = new ArrayList<>();
         Set<String> members = retrieveService.getAvailableAA();
         if (members.isEmpty()) {

@@ -219,8 +219,7 @@ public class RetrieveServiceMultipleThreads extends RetrieveServiceImplementatio
         //logger.info(MessageFormat.format("Get data for PV {0} from Hadoop, total {1}ms", pvName, poorMansProfiler.totalTimeMS()));
 
         if (dataArray == null && metaData == null) {
-            logger.error(MessageFormat.format("return null for PV {0} because no PV data and meta data from Hadoop.",
-                    pvName));
+        //    logger.error(MessageFormat.format("return null for PV {0} because no PV data and meta data from Hadoop.",pvName));
             return null;
         }
 
