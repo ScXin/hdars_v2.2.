@@ -9,6 +9,7 @@ import cls.stat_information_plugin.StatInformation;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hlsii.commdef.PVDataFromStore;
 import hadarshbaseplugin.api.IHadoopStorage;
 import hadarshbaseplugin.commdef.PostProcessing;
 import com.hlsii.commdef.PVDataFormat;
@@ -31,6 +32,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -89,20 +91,20 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
                     break;
                 }
             } else {
-                logger.info("Initialize aaRetrieveServiceImplementation.");
+             //   logger.info("Initialize aaRetrieveServiceImplementation.");
                 try {
                     if (aaRetrieveService.initialize()) {
                         initAA = true;
-                        logger.info("Initialize aaRetrieveServiceImplementation completed.");
+                       // logger.info("Initialize aaRetrieveServiceImplementation completed.");
                     } else {
-                        logger.error("Error: Initializing aaRetrieveServiceImplementation failure.");
+                        //logger.error("Error: Initializing aaRetrieveServiceImplementation failure.");
                     }
                 } catch (Exception ex) {
                     logger.error("Exception on RetrieveServiceImplementation initialization.", ex);
                 }
             }
         }
-        logger.info("RetrieveServiceImplementation initialization is completed!");
+        //logger.info("RetrieveServiceImplementation initialization is completed!");
     }
 
     private IHadoopStorage initializeHBase() {
@@ -110,17 +112,17 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
         if (hadoopService == null) {
             logger.error("Error: Initializing a IHadoopStorage implementation failure.");
         } else {
-            logger.info("HadoopStorageHBaseImpl initialization is completed!");
+           // logger.info("HadoopStorageHBaseImpl initialization is completed!");
         }
         return hadoopService;
     }
 
     private void reInitializeHBase() {
-        logger.info("HadoopStorageHBaseImpl re-initializing ...");
+     //   logger.info("HadoopStorageHBaseImpl re-initializing ...");
         IHadoopStorage hadoopService = initializeHBase();
         if (hadoopService != null) {
             hadoopRetrieveService = hadoopService;
-            logger.info("HadoopStorageHBaseImpl re-initialization is completed!");
+        //    logger.info("HadoopStorageHBaseImpl re-initialization is completed!");
             scheduledService.shutdown();
         }
     }
@@ -157,7 +159,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
             return retrieveDataList;
         }
 
-        logger.debug("Start retrieval.");
+     //   logger.debug("Start retrieval.");
 
         // Iterate all PVs
         for (String pv : parm.getPvs()) {
@@ -167,7 +169,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
             }
         }
 
-        logger.debug("Complete retrieval.");
+       // logger.debug("Complete retrieval.");
         return retrieveDataList;
     }
 
@@ -219,7 +221,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
             // if both AA and hadoop return null, return null.
             if (retrieveData == null && longTermDataArrayFromHadoop == null) {
                 // both AA and Hadoop return null, log
-                logger.error(MessageFormat.format("Get null event for PV {0}.", pvName));
+             //   logger.error(MessageFormat.format("Get null event for PV {0}.", pvName));
                 return null;
             }
 
@@ -259,7 +261,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
             return null;
         }
 
-        logger.debug(MessageFormat.format("Retrieve data for PV {0} from Hadoop.", pvName));
+        //logger.debug(MessageFormat.format("Retrieve data for PV {0} from Hadoop.", pvName));
         JSONArray eventArray = new JSONArray();
         try {
             List<Event> eventList = hadoopRetrieveService.getData(pvName, parm.getFrom(), parm.getTo(),
@@ -285,8 +287,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
             logger.error(MessageFormat.format("Exception: Retrieve PV {0} data from Hadoop.", pvName), ex);
             eventArray = null;
         }
-        logger.debug(MessageFormat.format("Get {0} event for PV {1} from Hadoop.",
-                eventArray == null ? 0 : eventArray.size(), pvName));
+        //logger.debug(MessageFormat.format("Get {0} event for PV {1} from Hadoop.", eventArray == null ? 0 : eventArray.size(), pvName));
 
         return eventArray;
     }
@@ -303,7 +304,7 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
             return null;
         }
         JSONObject object = null;
-        logger.debug(MessageFormat.format("Try to get meta data for PV {0} from Hadoop.", pvName));
+        //logger.debug(MessageFormat.format("Try to get meta data for PV {0} from Hadoop.", pvName));
         try {
             String metaStr = hadoopRetrieveService.getMeta(pvName);
             if (metaStr != null) {
@@ -479,6 +480,19 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
         return aaRetrieveService.getAvailableAA();
     }
 
+
+
+    @Override
+    public void startDataRetrieval(String pvName, RetrieveParms parm, boolean enableHBaseCache, List<Future<PVDataFromStore>> futures) {
+
+    }
+
+    @Override
+    public void addPVData(PVDataFromStore pvDataFromStore, HashMap<String, RetrieveData> pvDataMap) {
+
+    }
+
+
     @Override
     public boolean hbaseInService() {
         return hadoopRetrieveService != null;
@@ -519,4 +533,5 @@ public class RetrieveServiceImplementation implements IRetrieveService, IHBaseHe
                     SiteConfigUtil.getHbaseCheckingInterval(), TimeUnit.MILLISECONDS);
         }
     }
+
 }

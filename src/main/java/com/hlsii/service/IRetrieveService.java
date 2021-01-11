@@ -2,6 +2,7 @@ package com.hlsii.service;
 
 //import com.hlsii.commdef.PostProcessing;
 
+import com.hlsii.commdef.PVDataFromStore;
 import hadarshbaseplugin.commdef.PostProcessing;
 import com.hlsii.commdef.RetrieveParms;
 import com.hlsii.vo.RetrieveData;
@@ -9,8 +10,10 @@ import com.hlsii.vo.StatisticsData;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 /**
  * Data Retrieve Service interface
@@ -93,4 +96,9 @@ public interface IRetrieveService {
      * @return a set of {@link String}, or null if any exception.
      */
     Set<String> getAvailableAA();
+
+    void startDataRetrieval(String pvName, RetrieveParms parm, boolean enableHBaseCache,
+                            List<Future<PVDataFromStore>> futures);
+
+    void addPVData(PVDataFromStore pvDataFromStore, HashMap<String, RetrieveData> pvDataMap);
 }

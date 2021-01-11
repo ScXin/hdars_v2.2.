@@ -71,14 +71,14 @@ public class BufferedRetrieveService {
         calculateTotalSize(headStr.toString());
     }
 
-    private void calculateTotalSize(String headStr) {
+    private void  calculateTotalSize(String headStr) {
         /**
          * Timestamp,Linac100:PS2:QM5:COUNTER,Linac100:PS2:QM5:AI
          * 2019/05/06 16:19:24.196,3458482.902072066,3458482.902072066
          */
         float totalSeconds = (this.retrieveParms.getTo().getTime() - this.retrieveParms.getFrom().getTime()) / 1000;
         float maxEventNumber = 0;
-        float eventValueSizeOfOneRaw = "2075/07/05 19:19:19.196".length();
+        float eventValueSizeOfOneRaw = "2075-07-05 19:19:19.196".length();
         for (String pv : this.retrieveParms.getPvs()) {
             float eventRate = this.retrieveService.getEventRate(pv);
             if (eventRate == 0) {

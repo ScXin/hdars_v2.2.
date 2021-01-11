@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class DownloadService implements IDownloadService {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+   private Logger logger = LoggerFactory.getLogger(getClass());
     private Map<String, DownloadTask> taskMap = new HashMap<>();
 
     // Download task audit interval (5 minutes)
@@ -64,7 +64,7 @@ public class DownloadService implements IDownloadService {
     }
 
     private void auditTasks() {
-        logger.info("Audit the download tasks.");
+     //   logger.info("Audit the download tasks.");
         Date now = new Date();
         for(String taskid : new ArrayList<String>(taskMap.keySet())) {
             DownloadTask task = taskMap.get(taskid);

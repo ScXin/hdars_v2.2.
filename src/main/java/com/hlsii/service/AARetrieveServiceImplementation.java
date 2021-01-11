@@ -63,7 +63,6 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
     private IHazelcastClusterStateMonitor hazelcastClusterStateMonitor;
 
 
-
     @Override
     public boolean initialize() throws IOException {
         HazelcastInstance hzInstance;
@@ -71,7 +70,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
         // Set the thread count to control how may threads this library spawns.
         Properties hzThreadCounts = new Properties();
         if (System.getenv().containsKey("ARCHAPPL_ALL_APPS_ON_ONE_JVM")) {
-            logger.info("Reducing the generic clustering thread counts.");
+          //  logger.info("Reducing the generic clustering thread counts.");
             hzThreadCounts.put("hazelcast.clientengine.thread.count", "2");
             hzThreadCounts.put("hazelcast.operation.generic.thread.count", "2");
             hzThreadCounts.put("hazelcast.operation.thread.count", "2");
@@ -202,7 +201,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
     @Override
     public RetrieveData retrieveData(String pvName, RetrieveParms parms) {
         ApplianceInfo applianceInfo = pv2appliancemapping.get(pvName);
-        if(applianceInfo == null) {
+        if (applianceInfo == null) {
             logger.error(MessageFormat.format("The PV {0} is not archived in any appliance.", pvName));
             return null;
         }
@@ -213,11 +212,10 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
 
         String downSamplingPVName = constructDownSamplingPVName(pvName, parms.getPostProcessIdentity(),
                 parms.getIntervalSeconds());
-        logger.debug(MessageFormat.format("Retrieve data from AA with PV and downsampling name: {0}",
-                downSamplingPVName));
+        //logger.debug(MessageFormat.format("Retrieve data from AA with PV and downsampling name: {0}", downSamplingPVName));
 
         HashMap<String, String> otherParams = new HashMap<>();
-        otherParams.put("fetchLatestMetadata", parms.getFetchLatestMetadata()? "true":"false");
+        otherParams.put("fetchLatestMetadata", parms.getFetchLatestMetadata() ? "true" : "false");
 
         // Get PV data from AA over PB/HTTP
         RawDataRetrieval rawDataRetrieval = new RawDataRetrieval(applianceInfo.getDataRetrievalURL());
@@ -226,7 +224,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
 
         // check whether the event stream is null.
         if (stream == null) {
-            logger.error(MessageFormat.format("Get null event stream for the PV {0}.", pvName));
+           // logger.error(MessageFormat.format("Get null event stream for the PV {0}.", pvName));
             return null;
         }
 
@@ -248,7 +246,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
                 }
                 totalValues++;
             }
-            logger.debug(MessageFormat.format("Get {0} events for the PV {1} from AA.", totalValues, pvName));
+            //  logger.debug(MessageFormat.format("Get {0} events for the PV {1} from AA.", totalValues, pvName));
 
             retrieveData.setData(data);
         } finally {
@@ -273,14 +271,10 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
     /**
      * Construct a downSampling PV name according to: PV name, downSampling method and interval.
      *
-     * @param pvName
-     *          the PV name.
-     * @param downSamplingIdentify
-     *          the downSampling method.
-     * @param intervalSeconds
-     *          the downSampling interval (second).
-     * @return
-     *          the construct name string.
+     * @param pvName               the PV name.
+     * @param downSamplingIdentify the downSampling method.
+     * @param intervalSeconds      the downSampling interval (second).
+     * @return the construct name string.
      */
     private String constructDownSamplingPVName(String pvName, PostProcessing downSamplingIdentify, int intervalSeconds) {
         if (downSamplingIdentify == PostProcessing.NONE) {
@@ -292,12 +286,10 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
 
     /**
      * Generate meta data JSONObject from {@link EventStream}
-     * @param pvName
-     *          the PV name.
-     * @param stream
-     *          the {@link EventStream}
-     * @return
-     *          the meta data JSONObject or null if there is any error.
+     *
+     * @param pvName the PV name.
+     * @param stream the {@link EventStream}
+     * @return the meta data JSONObject or null if there is any error.
      */
     private JSONObject GenerateMetaJSON(String pvName, EventStream stream) {
         JSONObject metaObject = new JSONObject();
@@ -396,8 +388,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
          */
         if (pvTypeInfo == null) {
             logger.info("Cannot get the event sample period, return 0. pv = " + pvName);
-        }
-        else {
+        } else {
             period = pvTypeInfo.getSamplingPeriod();
         }
         return period;
@@ -434,10 +425,8 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
     /**
      * Get the Hadoop Partition in milliseconds.
      *
-     * @param pvTypeInfo
-     *          the {@link PVTypeInfo}
-     * @return
-     *          the milliseconds of the Hadoop. 0 if there is no Hadoop in the data store or error.
+     * @param pvTypeInfo the {@link PVTypeInfo}
+     * @return the milliseconds of the Hadoop. 0 if there is no Hadoop in the data store or error.
      */
     private static long getHadoopPartition(PVTypeInfo pvTypeInfo) {
         PartitionGranularity partitionGranularity = PartitionGranularity.PARTITION_5MIN;
@@ -456,24 +445,23 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
                 }
 
                 HashMap<String, String> queryNVPairs = URIUtils.parseQueryString(srcURI);
-                if(queryNVPairs.containsKey("partitionGranularity")) {
+                if (queryNVPairs.containsKey("partitionGranularity")) {
                     partitionGranularity = PartitionGranularity.valueOf(queryNVPairs.get("partitionGranularity"));
                 } else {
                     logger.error(MessageFormat.format("partitionGranularity is not filled in data store: {0}", store));
                     return 0;
                 }
 
-                if(queryNVPairs.containsKey("hold")) {
+                if (queryNVPairs.containsKey("hold")) {
                     holdETLForPartions = Integer.parseInt(queryNVPairs.get("hold"));
                 }
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 logger.error(ex);
                 return 0;
             }
         }
 
-        logger.debug(MessageFormat.format("partitionGranularity: {0}, holdETLForPartions: {1}",
-                partitionGranularity, holdETLForPartions));
+        //logger.debug(MessageFormat.format("partitionGranularity: {0}, holdETLForPartions: {1}", partitionGranularity, holdETLForPartions));
 
         if (hadoopExist) {
             return partitionGranularity.getApproxSecondsPerChunk() * holdETLForPartions * 1000;
@@ -488,10 +476,11 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
      * Checks java.system.properties first (passed in with a -D to the JVM)
      * Then checks the environment (for example, using export in Linux).
      * If we are not able to match in either place, we return as is.
-     *
+     * <p>
      * For example, if we did <code>export ARCHAPPL_SHORT_TERM_FOLDER=/dev/test</code>, and then used
      * <code>pbraw://${ARCHAPPL_SHORT_TERM_FOLDER}<code> in the policy datastore definition,
      * these would be expanded into <code>pbraw:///dev/test<code></code>
+     *
      * @param srcURIStr
      * @return
      */
@@ -500,15 +489,15 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
             @Override
             public String lookup(String name) {
                 String valueFromProps = System.getProperty(name);
-                if(valueFromProps != null) {
-                    if(logger.isDebugEnabled()) logger.debug("Resolving " + name + " from system properties into " +
-                            valueFromProps);
+                if (valueFromProps != null) {
+                    if (logger.isDebugEnabled())
+                       // logger.debug("Resolving " + name + " from system properties into " + valueFromProps);
                     return valueFromProps;
                 }
                 String valueFromEnvironment = System.getenv(name);
-                if(valueFromEnvironment != null) {
-                    if(logger.isDebugEnabled()) logger.debug("Resolving " + name + " from system environment into " +
-                            valueFromEnvironment);
+                if (valueFromEnvironment != null) {
+                    if (logger.isDebugEnabled())
+                      //  logger.debug("Resolving " + name + " from system environment into " + valueFromEnvironment);
                     return valueFromEnvironment;
                 }
                 logger.error("Unable to find " + name + " in either the java system properties or the system " +
@@ -541,7 +530,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
     @Override
     public StatInformation getStat(String pvName, Timestamp startTime, Timestamp endTime) {
         ApplianceInfo applianceInfo = pv2appliancemapping.get(pvName);
-        if(applianceInfo == null) {
+        if (applianceInfo == null) {
             logger.error(MessageFormat.format("The PV {0} is not archived in any appliance.", pvName));
             return ImmutableStatInformation.builder().count(0).sum(0).squareSum(0).mean(0).deviation(0).rms(0).max(0)
                     .min(0).build();
@@ -550,9 +539,9 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
         StringWriter buf = new StringWriter();
         String encode;
         try {
-            encode=URLEncoder.encode(pvName, "UTF-8");
+            encode = URLEncoder.encode(pvName, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
-            encode=pvName;
+            encode = pvName;
         }
         buf.append(applianceInfo.getDataRetrievalURL())
                 .append("/data/getData.stat")
@@ -561,7 +550,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
                 .append("&to=").append(convertToISO8601String(endTime));
 
         String statURL = buf.toString();
-        logger.info("URL to fetch stat data for PV " + pvName + " is " + statURL);
+        // logger.info("URL to fetch stat data for PV " + pvName + " is " + statURL);
 
         try {
             String statJsonString = sendRequestToRemote(statURL);
@@ -581,7 +570,7 @@ public class AARetrieveServiceImplementation implements IAARetrieveService {
                         .min(Double.parseDouble(statData.get("min").toString()))
                         .build();
             }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             logger.warn("Exception fetching stat data for pv " + pvName, ex);
         }
         return ImmutableStatInformation.builder().count(0).sum(0).squareSum(0).mean(0).deviation(0).rms(0).max(0)

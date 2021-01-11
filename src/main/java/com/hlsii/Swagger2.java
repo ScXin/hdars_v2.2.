@@ -1,3 +1,4 @@
+/*
 package com.hlsii;
 
 import org.springframework.context.annotation.Bean;
@@ -10,10 +11,6 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-/**
- * @author ScXin
- * @date 5/3/2020 10:57 AM
- */
 @Configuration
 @EnableSwagger2
 public class Swagger2 {
@@ -37,3 +34,4 @@ public class Swagger2 {
                 .build();
     }
 }
+*/

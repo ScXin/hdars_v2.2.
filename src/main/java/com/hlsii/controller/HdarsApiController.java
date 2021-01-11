@@ -144,6 +144,7 @@ public class HdarsApiController {
         return rw;
     }
 
+    /*
     //    @RequiresRoles(value={"admin","user"},logical = Logical.OR )
     @ApiOperation("创建下载任务，并计算下载信息")
     @GetMapping("/history/downloadInfo/{pvListStr}/{type}/{startTime}/{endTime}")
@@ -177,6 +178,32 @@ public class HdarsApiController {
         downloadInfo.put("taskid", task.getId());
         return new ReturnWrap(Constants.RETURN_SUCCESS, downloadInfo);
     }
+*/
+    /********************************download2info********************************************************************/
+
+    @ApiOperation("创建下载任务，并计算下载信息")
+    @GetMapping("/history/downloadInfo2/{pvListStr}/{startTime}/{endTime}")
+    public ReturnWrap downloadPVData2(@PathVariable("pvListStr") String pvListStr,
+                                      @PathVariable("startTime") String from,
+                                      @PathVariable("endTime") String to) {
+        PostProcessing postProcessing = PostProcessing.NONE;
+        List<String> pvList = Arrays.asList(pvListStr.split(","));
+        Timestamp startTime = TimeUtil.convertFromISO8601String(from);
+        Timestamp endTime = TimeUtil.convertFromISO8601String(to);
+        int sampleDuration = 0;
+        RetrieveParms retrieveParms = new RetrieveParms(pvList, postProcessing, sampleDuration,
+                startTime, endTime, true, PVDataFormat.QW);
+
+        BufferedRetrieveService2 in = new BufferedRetrieveService2(retrieveService, retrieveParms);
+
+        long length = in.getTotalSize();
+        DownloadTask task = downloadService.createTask(retrieveParms);
+        logger.info("Create download task:" + task.getId());
+        JSONObject downloadInfo = DownloadController.estimateDownload(length);
+        downloadInfo.put("taskid", task.getId());
+        return new ReturnWrap(Constants.RETURN_SUCCESS, downloadInfo);
+    }
+
 
 
     @ApiOperation("根据PV名称,起止时间,获取这段时间的数据量")

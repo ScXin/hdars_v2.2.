@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.epics.archiverappliance.Event;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import java.util.concurrent.*;
  */
 @Service
 public class RetrieveServiceMultipleThreads extends RetrieveServiceImplementation {
-    private static Logger logger = Logger.getLogger(RetrieveServiceMultipleThreads.class.getName());
+   private static Logger logger = Logger.getLogger(RetrieveServiceMultipleThreads.class.getName());
 
     private ExecutorService threadPool;
 
@@ -60,7 +61,7 @@ public class RetrieveServiceMultipleThreads extends RetrieveServiceImplementatio
             return new ArrayList<>();
         }
 
-        logger.debug("Start retrieval.");
+     //   logger.debug("Start retrieval.");
 
         List<Future<PVDataFromStore>> futures = new ArrayList<>();
         HashMap<String, RetrieveData> pvDataMap = new HashMap<>();
@@ -73,13 +74,15 @@ public class RetrieveServiceMultipleThreads extends RetrieveServiceImplementatio
         // get all retrieval result.
         for (Future<PVDataFromStore> future : futures) {
             try {
-                addPVData(future.get(), pvDataMap);
+                if(future!=null){
+                    addPVData(future.get(), pvDataMap);
+                }
             } catch (Exception ex) {
                 logger.error("Cannot get data from thread pool.", ex);
             }
         }
 
-        logger.debug("Complete retrieval.");
+       // logger.debug("Complete retrieval.");
 
         return new ArrayList<>(pvDataMap.values());
     }
@@ -90,9 +93,10 @@ public class RetrieveServiceMultipleThreads extends RetrieveServiceImplementatio
      * @param pvDataFromStore
      *          the {@link PVDataFromStore}
      */
-    private void addPVData(PVDataFromStore pvDataFromStore, HashMap<String, RetrieveData> pvDataMap) {
+    @Override
+    public void addPVData(PVDataFromStore pvDataFromStore, HashMap<String, RetrieveData> pvDataMap) {
         if (pvDataFromStore == null) {
-            logger.info("pvDataFromStore is Null!");
+           // logger.info("pvDataFromStore is Null!");
             return;
         }
 
@@ -136,7 +140,8 @@ public class RetrieveServiceMultipleThreads extends RetrieveServiceImplementatio
      * @return
      *          the {@link RetrieveData}
      */
-    private void startDataRetrieval(String pvName, RetrieveParms parm, boolean enableHBaseCache,
+    @Override
+    public void startDataRetrieval(String pvName, RetrieveParms parm, boolean enableHBaseCache,
                                     List<Future<PVDataFromStore>> futures) {
         try {
             // Get first known event in Hadoop in order to identify the data storage.
@@ -149,8 +154,11 @@ public class RetrieveServiceMultipleThreads extends RetrieveServiceImplementatio
                         pvName));
             }
 
+
             List<PVDataStore> dataStores = getAaRetrieveService().resolveDataStore(pvName, parm.getFrom(), parm.getTo(),
                     firstKnownEventInHadoop);
+
+
 
             if(dataStores.contains(PVDataStore.AA)) {
                 // Get PV data from AA
@@ -208,8 +216,7 @@ public class RetrieveServiceMultipleThreads extends RetrieveServiceImplementatio
 
         poorMansProfiler.mark("After Hadoop retrieval.");
 
-        logger.info(MessageFormat.format("Get data for PV {0} from Hadoop, total {1}ms",
-                pvName, poorMansProfiler.totalTimeMS()));
+        //logger.info(MessageFormat.format("Get data for PV {0} from Hadoop, total {1}ms", pvName, poorMansProfiler.totalTimeMS()));
 
         if (dataArray == null && metaData == null) {
             logger.error(MessageFormat.format("return null for PV {0} because no PV data and meta data from Hadoop.",

@@ -150,13 +150,13 @@ public class HadoopStorageHBaseImpl implements IHadoopStorage {
         conf.set("hbase.zookeeper.quorum", config.zookeeperQuorum());
         conf.set("hbase.zookeeper.property.clientPort", Integer.toString(config.zookeeperClientPort()));
         try {
-            logger.info("connect to :" + config.zookeeperQuorum() + ":" + config.zookeeperClientPort());
+     //       logger.info("connect to :" + config.zookeeperQuorum() + ":" + config.zookeeperClientPort());
             conn = ConnectionFactory.createConnection(conf);
         } catch (IOException e) {
             logger.error("Exception in create connect to HBase" + e.getMessage());
             return false;
         }
-        logger.info("connection established.");
+       // logger.info("connection established.");
 
         pVIdmanager.initialize(conn, config);
         statPlugin = new StatInformationPlugin(conn, config.pvTableName(), config.maxSecondsForRawSampleRow());
@@ -493,15 +493,14 @@ public class HadoopStorageHBaseImpl implements IHadoopStorage {
                 startTimeStamp, enableCache, method == DownSamplingMethods.AVERAGE);
 
         if (pvEventsList.isEmpty()) {
-            logger.debug("can not retrieval data from HBase for PV: " + pvName + " time:" + startTime);
+         //   logger.debug("can not retrieval data from HBase for PV: " + pvName + " time:" + startTime);
             return new ArrayList<>();
         }
         // The last row maybe contain some data newer than the endTimeStamp.
         pvEventsList.set(pvEventsList.size() - 1, pvEventsList.get(pvEventsList.size() - 1).stream()
                 .filter(e -> e.getEpochSeconds() <= endTimeStamp).collect(Collectors.toList()));
         List<Event> result = pvEventsList.stream().flatMap(List::stream).collect(Collectors.toList());
-        logger.debug("Retrieval " + pvEventsList.size() + " rows, and " + result.size() + " events from Hbase for "
-                + pvName);
+        //logger.debug("Retrieval " + pvEventsList.size() + " rows, and " + result.size() + " events from Hbase for "+ pvName);
         return result;
     }
 
