@@ -104,7 +104,7 @@ public class DownloadController {
         int pvNum = 0;
         int pvTotalNum = task.getParms().getPvs().size();
         int totalRetrievalTimes = (int) Math.ceil((task.getParms().getTo().getTime() - task.getParms().getFrom().getTime()) /
-                (SiteConfigUtil.getTimeSlotForDownload() * 1000));
+                (SiteConfigUtil.getTimeSlotForDownload() * 1000.0d));
         int totalTimes = pvTotalNum * totalRetrievalTimes;
         for (String pvName : retrieveParms.getPvs()) {
             // 每一个PV单独来下载
